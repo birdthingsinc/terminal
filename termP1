@@ -1,0 +1,61 @@
+import time
+import os
+
+# Expanded systems dictionary: each system has a list of possible states cycling through
+systems = {
+    "Power": ["On", "Off"],
+    "Cameras": ["Online", "Offline", "Recording"],
+    "Doors": ["Locked", "Unlocked", "Jammed"],
+    "Alarms": ["Armed", "Disarmed"],
+    "HVAC": ["Operational", "Maintenance", "Offline"],
+    "Lights": ["On", "Dimmed", "Off"],
+    "Generators": ["Running", "Stopped", "Fault"],
+    "Communications": ["Active", "Disabled"],
+    "Security Bots": ["Patrolling", "Standby", "Deactivated"],
+    "Fire Suppression": ["Enabled", "Disabled"],
+}
+
+# Track current state index for each system
+system_states_idx = {system: 0 for system in systems}
+
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_header():
+    print("FALLOUT-STYLE TERMINAL INTERFACE\n")
+    print("SYSTEMS CONTROL PANEL\n")
+
+def print_systems():
+    for idx, system in enumerate(systems, 1):
+        current_state = systems[system][system_states_idx[system]]
+        print(f"{idx}. {system}: {current_state}")
+
+def print_menu():
+    print("\nSelect a system to cycle its state, or 0 to exit.")
+
+def toggle_system(name):
+    system_states_idx[name] = (system_states_idx[name] + 1) % len(systems[name])
+    new_state = systems[name][system_states_idx[name]]
+    print(f"{name} system state changed to: {new_state}")
+
+def terminal():
+    while True:
+        clear()
+        print_header()
+        print_systems()
+        print_menu()
+        choice = input("> ")
+        if choice == "0":
+            print("Exiting terminal...")
+            time.sleep(1)
+            break
+        if choice.isdigit() and 1 <= int(choice) <= len(systems):
+            selected = list(systems.keys())[int(choice) - 1]
+            toggle_system(selected)
+            time.sleep(1)
+        else:
+            print("Invalid input.")
+            time.sleep(1)
+
+if __name__ == "__main__":
+    terminal()
